@@ -18,6 +18,7 @@
        height: 500px;
        transition: all 0.3s;
        position: relative;
+       transition: tranform 2s;
        
       }
 
@@ -39,7 +40,9 @@
        z-index: 999;
        pointer-events: none; 
        */
-       /* transition: all 0.2s; */
+       transition: transform 0.5s ease;   
+        
+
       }
 
       .content{
@@ -108,8 +111,8 @@
       // $(".drage-circle").css("border-radius: 40% 50% 50% 50%")
       document.getElementById("drag-circle").style.borderRadius = "42% 50% 50% 50%";
       const angle =
-        Math.atan2(clientY - arrowCenter.y, clientX - arrowCenter.x) - 10;
-      arrow.style.transform = `rotate(${angle}rad)`;
+        Math.atan2(clientY - arrowCenter.y, clientX - arrowCenter.x) + 15;
+        arrow.style.transform = `rotate(${angle}rad)`;
     });
 
    //smooth scroll
