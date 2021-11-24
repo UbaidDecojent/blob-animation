@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .drag-circle-wrapper{
+        width: 500px;
+       height: 500px;
+       transition: all 0.3s;
+       position: relative;
+       
+      }
+
+      /* Jelly Blob Div */
+     .drag-circle {
+       /*   position: fixed;
+       top: 50%;
+       left: 50%;
+       right: 0;
+       bottom: 0; */
+       width: 100%;
+       height: 100%;
+        mix-blend-mode: difference;
+        background-color: #eeeef0;
+        border-radius: 50% 50% 50% 50%;
+        transform-origin: 50% 50%;
+        /*   transform: translate(-50%, -50%);
+       will-change: width, height, transform, border;
+       z-index: 999;
+       pointer-events: none; 
+       */
+       /* transition: all 0.2s; */
+      }
+
+      .content{
+        position: absolute;
+        top: 0;
+        z-index: 100;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+      }
+      .text{
+        font-size: 6.625rem;
+      line-height: 1.2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="main">
+      <div class="drag-circle-wrapper">
+        <div class="drag-circle" id="drag-circle"></div>
+       
+      </div>
+      <!-- <div class="content">
+        <h1 class="text">We make Creative Things,Everyday</h1>
+      </div>
+       -->
+    </div>
+  </body>
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/gsap.min.js"></script>
+  <script src="./js/ScrollTrigger.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const tl = gsap.timeline({
+      defaults: { duration: 1, ease: "none" },
+      scrollTrigger: {
+        trigger: ".main",
+        start: "50% 50%",
+        end: "+=300%",
+        scrub: true,
+        pin: true,
+      },
+    });
+
+    tl.to(".drag-circle-wrapper", { scale: 30 }).set(".drag-circle-wrapper", { autoAlpha: 0 });
+
+    //   .to('.panel-two .dot', { scale: 50 })
+    //   .set('.panel-two', { autoAlpha: 0 })
+
+    gsap.set(".drag-circle-wrapper", {
+      zIndex: (i, target, targets) => targets.length - i,
+    });
+
+    function getCenter(element) {
+      const { left, top, width, height } = element.getBoundingClientRect();
+      return { x: left + width / 2, y: top + height / 2 };
+    }
+
+    const arrow = document.querySelector(".drag-circle");
+    const arrowCenter = getCenter(arrow);
+    addEventListener("mousemove", ({ clientX, clientY }) => {
+      // var scale1 = arrow.style.scale;
+      // $(".drage-circle").css("border-radius: 40% 50% 50% 50%")
+      document.getElementById("drag-circle").style.borderRadius = "42% 50% 50% 50%";
+      const angle =
+        Math.atan2(clientY - arrowCenter.y, clientX - arrowCenter.x) - 10;
+      arrow.style.transform = `rotate(${angle}rad)`;
+    });
+
+   //smooth scroll
+var html = document.documentElement;
+var body = document.body;
+
+var scroller = {
+  target: document.querySelector(".main"),
+  ease: 0.05, // <= scroll speed
+  endY: 0,
+  y: 0,
+  resizeRequest: 1,
+  scrollRequest: 0,
+};
+
+var requestId = null;
+
+TweenLite.set(scroller.target, {
+  rotation: 0.01,
+  force3D: true
+});
+
+window.addEventListener("load", onLoad);
+
+function onLoad() {    
+  updateScroller();  
+  window.focus();
+  window.addEventListener("resize", onResize);
+  document.addEventListener("scroll", onScroll); 
+}
+
+function updateScroller() {
+  
+  var resized = scroller.resizeRequest > 0;
+    
+  if (resized) {    
+    var height = scroller.target.clientHeight;
+    body.style.height = height + "px";
+    scroller.resizeRequest = 0;
+  }
+      
+  var scrollY = window.pageYOffset || html.scrollTop || body.scrollTop || 0;
+
+  scroller.endY = scrollY;
+  scroller.y += (scrollY - scroller.y) * scroller.ease;
+
+  if (Math.abs(scrollY - scroller.y) < 0.05 || resized) {
+    scroller.y = scrollY;
+    scroller.scrollRequest = 0;
+  }
+  
+  TweenLite.set(scroller.target, { 
+    y: -scroller.y 
+  });
+  
+  requestId = scroller.scrollRequest > 0 ? requestAnimationFrame(updateScroller) : null;
+}
+
+function onScroll() {
+  scroller.scrollRequest++;
+  if (!requestId) {
+    requestId = requestAnimationFrame(updateScroller);
+  }
+}
+
+function onResize() {
+  scroller.resizeRequest++;
+  if (!requestId) {
+    requestId = requestAnimationFrame(updateScroller);
+  }
+}
+    
+  </script>
+</html>
